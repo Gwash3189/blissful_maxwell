@@ -1,7 +1,7 @@
 import express from 'express'
 import { Request, Response } from 'express'
 import bodyParser from 'body-parser'
-import { Comment, PrismaClient } from '@prisma/client'
+import { Comment, Member, PrismaClient, Upvote } from '@prisma/client'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import relativetime from 'dayjs/plugin/relativeTime'
@@ -18,6 +18,32 @@ app.set('views', './src/views')
 dayjs.extend(duration)
 dayjs.extend(relativetime)
 
+function identity(x: any) {
+  return x
+}
+
+async function canUpvote(member: Member, comment: Comment) {
+  let doesOwnTheComment = member.id === comment.memberId
+
+  if (doesOwnTheComment) {
+    return false
+  }
+
+  const previouslyUpvotedTheComment = await prisma.upvote.findFirst({
+    where: {
+      memberId: member.id,
+      commentId: comment.id
+    }
+  })
+
+
+  if (Boolean(previouslyUpvotedTheComment)) {
+    return  false
+  }
+
+  return true
+}
+
 app.get('/', async (req: Request, res: Response) => {
   const comments = await prisma.comment.findMany({
     orderBy: {
@@ -29,19 +55,18 @@ app.get('/', async (req: Request, res: Response) => {
   })
   // the person viewing the comments is the first member available
   const member = comments[0].member
-  const newComments = comments.map(comment => {
+  const newComments = await Promise.all(comments.map(async (comment) => {
     return {
       ...comment,
       createdAt: dayjs(comment.createdAt).fromNow(),
-      canUpvote: member.id !== comment.member.id
+      canUpvote: await canUpvote(member, comment)
     }
-  })
+  }))
 
   res.render('index', { comments: newComments, member })
 })
 
 app.post('/members/:id/comments', async (req: Request, res: Response) => {
-  console.log(req.body)
   const memberId = req.params?.id
   const commentText = req.body as Omit<Comment, 'id' | 'createdAt'>
   try {
