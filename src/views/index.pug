@@ -150,9 +150,8 @@ html
   script const member = !{JSON.stringify(member)}
   script.
     (() => {
-      const selector = $('[data-upvote-action=true]')
-      selector.on('click', () => {
-        const commentId = selector.attr('data-comment-id')
+      $('[data-upvote-action=true]').on('click', (event) => {
+        const commentId = $(event.target).closest('[data-comment-id]').attr('data-comment-id')
         $.post(`members/${member.id}/comments/${commentId}/upvote`)
       })
     })()
