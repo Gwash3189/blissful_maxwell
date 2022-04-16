@@ -22,7 +22,8 @@ model Comment {
   id String @id @default(uuid())
   text String
   createdAt DateTime @default(now())
-  members Member[]
+  memberId String
+  member Member @relation(fields: [memberId], references: [id])
   upvotes Upvote[]
 }
 
