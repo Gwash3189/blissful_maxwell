@@ -81,6 +81,7 @@ html
         padding-left: 10px;
         padding-top: 6px;
         padding-bottom: 7px;
+        font-size: 11px;
       }
 
       .member-comment-button {
@@ -91,23 +92,35 @@ html
         border: none;
         width: 83px;
       }
+
+      .comments-list-container {
+        padding-top: 40px;
+      }
+
+      .hr {
+        width: 680px;
+        background-color: #e5e5e5;
+        height: 1px;
+        border: none;
+      }
   body
     div(class='member-comment-container')
       img(src=member.avatar, alt=member.name class='member-avatar')
       input(class='member-comment-input' placeholder='What are your throughts?')
       button(class='member-comment-button') Comment
-    hr
-    each comment in comments
-      div(class='comment-container')
-        img(src=comment.member.avatar, alt=comment.member.name class='member-avatar')
-        div
-          p(class='member-name') #{comment.member.name}・
-            span(class='comment-stats') #{comment.createdAt}
-          p(class='comment-text') #{comment.text}
-          div(class='comment-text-actions')
-            div(class='upvote-action-container')
-              div(class='upvote-action-controls')
-                span(class='upvote-action-arrow') ▲
-                span() Upvote
-            div(class='reply-action')
-              span Reply
+    hr(class='hr')
+    div(class='comments-list-container')
+      each comment in comments
+        div(class='comment-container')
+          img(src=comment.member.avatar, alt=comment.member.name class='member-avatar')
+          div
+            p(class='member-name') #{comment.member.name}・
+              span(class='comment-stats') #{comment.createdAt}
+            p(class='comment-text') #{comment.text}
+            div(class='comment-text-actions')
+              div(class='upvote-action-container')
+                div(class='upvote-action-controls')
+                  span(class='upvote-action-arrow') ▲
+                  span() Upvote
+              div(class='reply-action')
+                span Reply
