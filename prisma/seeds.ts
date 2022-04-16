@@ -11,7 +11,7 @@ async function main() {
     const members = await Promise.all(new Array(5).fill(1).map(async () => {
       return await prisma.member.create({
         data: {
-          avatar: 'https://www.coolgenerator.com/Pic/Face//male/male20101085925863250.jpg',
+          avatar: faker.image.avatar(),
           name: faker.name.findName()
         }
       })
