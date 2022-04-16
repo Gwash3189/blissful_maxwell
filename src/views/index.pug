@@ -81,7 +81,6 @@ html
         padding-left: 10px;
         padding-top: 6px;
         padding-bottom: 7px;
-        font-size: 11px;
       }
 
       .member-comment-button {
@@ -91,6 +90,14 @@ html
         border-radius: 4px;
         border: none;
         width: 83px;
+      }
+
+      .member-comment-button:hover {
+        background: #7430e3;
+      }
+
+      .member-comment-button:active {
+        background: #5d25b8;
       }
 
       .comments-list-container {
@@ -103,11 +110,12 @@ html
         height: 1px;
         border: none;
       }
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous")
   body
     div(class='member-comment-container')
       img(src=member.avatar, alt=member.name class='member-avatar')
-      input(class='member-comment-input' placeholder='What are your throughts?')
-      button(class='member-comment-button') Comment
+      input(class='member-comment-input' placeholder='What are your throughts?' data-member-comment-input)
+      button(type='button' class='member-comment-button' data-member-comment-button) Comment
     hr(class='hr')
     div(class='comments-list-container')
       each comment in comments
@@ -118,9 +126,25 @@ html
               span(class='comment-stats') #{comment.createdAt}
             p(class='comment-text') #{comment.text}
             div(class='comment-text-actions')
-              div(class='upvote-action-container')
+              div(class='upvote-action-container' data-upvote-action data-comment-id=comment.id)
                 div(class='upvote-action-controls')
                   span(class='upvote-action-arrow') ▲
                   span() Upvote
               div(class='reply-action')
                 span Reply
+  script const member = !{JSON.stringify(member)}
+  script.
+    $('[data-member-comment-button]').on('click', () => {
+      const text = $('[data-member-comment-input]').val()
+      $.post(`members/${member.id}/comments`, {
+        text
+      }).then(result => {
+        $('[data-member-comment-input]').val('')
+      })
+    })
+
+    $('[data-upvote-action]').on('click', () => {
+      const commentId = $('[data-upvote-action]').attr('data-comment-id')
+      $.post(`members/${member.id}/comments/${commentId}/upvote`)
+    })
+
