@@ -29,13 +29,17 @@ function page(pageNumber: string, pageSize: number) {
 
 app.get('/', async (req: Request, res: Response) => {
   const comments = await prisma.comment.findMany({
+    orderBy: {
+      createdAt: 'desc'
+    },
     include: {
       member: true
-    }
+    },
   })
-
   const newComments = comments.map(comment => ({ ...comment, createdAt: dayjs(comment.createdAt).fromNow() }))
-  res.render('index', { comments: newComments })
+  const member = newComments[0].member
+
+  res.render('index', { comments: newComments, member })
 })
 
 app.get('/comments', async (req: Request, res: Response) => {

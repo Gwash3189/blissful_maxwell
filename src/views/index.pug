@@ -1,6 +1,6 @@
 html
   head
-    title= title
+    title Ghost Coding Challenge
     style(type="text/css").
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
@@ -8,6 +8,7 @@ html
         font-family: 'Inter', sans-serif;
         padding: 49px;
       }
+
       .member-avatar {
         height: 30px;
         width: 30px;
@@ -65,7 +66,37 @@ html
         color: #4B587C;
         font-size: 11px;
       }
+
+      .member-comment-container {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 44px;
+        padding-top: 37px;
+      }
+
+      .member-comment-input {
+        width: 542px;
+        border: 1px solid #e5e5e5;
+        border-radius: 4px;
+        padding-left: 10px;
+        padding-top: 6px;
+        padding-bottom: 7px;
+      }
+
+      .member-comment-button {
+        margin-left: 13px;
+        color: white;
+        background: #7E34F7;
+        border-radius: 4px;
+        border: none;
+        width: 83px;
+      }
   body
+    div(class='member-comment-container')
+      img(src=member.avatar, alt=member.name class='member-avatar')
+      input(class='member-comment-input' placeholder='What are your throughts?')
+      button(class='member-comment-button') Comment
+    hr
     each comment in comments
       div(class='comment-container')
         img(src=comment.member.avatar, alt=comment.member.name class='member-avatar')
