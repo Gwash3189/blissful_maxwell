@@ -18,15 +18,6 @@ app.set('views', './src/views')
 dayjs.extend(duration)
 dayjs.extend(relativetime)
 
-function page(pageNumber: string, pageSize: number) {
-  const page = (pageNumber || '0') as string
-  let skip = parseInt(page, 10)
-  skip = (skip === 1 || skip <= 0) ? 0 : skip - 1
-  skip = skip * pageSize
-
-  return skip
-}
-
 app.get('/', async (req: Request, res: Response) => {
   const comments = await prisma.comment.findMany({
     orderBy: {
@@ -36,50 +27,49 @@ app.get('/', async (req: Request, res: Response) => {
       member: true
     },
   })
-  const newComments = comments.map(comment => ({ ...comment, createdAt: dayjs(comment.createdAt).fromNow() }))
-  const member = newComments[0].member
+  // the person viewing the comments is the first member available
+  const member = comments[0].member
+  const newComments = comments.map(comment => {
+    return {
+      ...comment,
+      createdAt: dayjs(comment.createdAt).fromNow(),
+      canUpvote: member.id !== comment.member.id
+    }
+  })
 
   res.render('index', { comments: newComments, member })
 })
 
-app.get('/comments', async (req: Request, res: Response) => {
-  const pageSize = 30
-
-  const comments = await prisma.comment.findMany({
-    skip: page((req.query?.page || '0') as string, pageSize)
-  })
-
-  res.json({ data: comments })
-})
-
 app.post('/members/:id/comments', async (req: Request, res: Response) => {
+  console.log(req.body)
   const memberId = req.params?.id
   const commentText = req.body as Omit<Comment, 'id' | 'createdAt'>
   try {
-    const comment = await prisma.comment.create({
+    await prisma.comment.create({
       data: {
         text: commentText.text,
         memberId: memberId
       }
     })
-    res.status(200).json({ data: comment })
   } catch (error) {
-    res.status(400).json({ error })
+    console.error(error)
   }
+
+  res.redirect('/')
 })
 
 app.post('/members/:memberId/comments/:commentId/upvote', async (req: Request, res: Response) => {
   const memberId = req.params?.memberId
   const commentId = req.params?.commentId
   try {
-    const upvote = await prisma.upvote.create({
+    await prisma.upvote.create({
       data: {
         commentId,
         memberId
       }
     })
 
-    res.status(200).json({ data: upvote })
+    res.sendStatus(200)
   } catch (error) {
     res.status(400).json({ error })
   }
