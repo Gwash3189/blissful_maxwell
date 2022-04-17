@@ -14,3 +14,7 @@ Then open a browser to `localhost:3000`
 ```bash
 npx prisma studio
 ```
+
+### Documentation
+
+[here](https://miro.com/app/board/uXjVO8kqtr0=/)
