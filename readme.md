@@ -1,3 +1,8 @@
+### Notes
+
+This repo only contains the code to achieve MVP/V1 of the coding challenge.
+The documentation (below) contains the required changes for V2.
+
 ### Getting Started
 
 1. Run `cp ./env.example ./env` and fill in the database connection string to point to a local postgres instance
