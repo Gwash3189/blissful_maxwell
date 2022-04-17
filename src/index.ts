@@ -18,10 +18,6 @@ app.set('views', './src/views')
 dayjs.extend(duration)
 dayjs.extend(relativetime)
 
-function identity(x: any) {
-  return x
-}
-
 async function canUpvote(member: Member, comment: Comment) {
   let doesOwnTheComment = member.id === comment.memberId
 
@@ -53,6 +49,7 @@ app.get('/', async (req: Request, res: Response) => {
       member: true
     },
   })
+
   // the person viewing the comments is the first member available
   const member = comments[0].member
   const newComments = await Promise.all(comments.map(async (comment) => {
