@@ -151,8 +151,11 @@ html
   script.
     (() => {
       $('[data-upvote-action=true]').on('click', (event) => {
+        const selector = $(event.target).closest('[data-comment-id]')
         const commentId = $(event.target).closest('[data-comment-id]').attr('data-comment-id')
-        $.post(`members/${member.id}/comments/${commentId}/upvote`)
+        $.post(`members/${member.id}/comments/${commentId}/upvote`).then(() => {
+          selector.addClass('disabled-upvote-action-controls')
+        })
       })
     })()
 
