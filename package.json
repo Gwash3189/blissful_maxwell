@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bootstrap": "rm -rf node_modules; npm install && prisma generate && prisma migrate reset",
+    "bootstrap": "rm -rf node_modules; npm install && prisma generate && prisma migrate reset && npm run seed",
     "dev": "npx nodemon src/index.ts --watch ./src",
     "start": "npx ts-node src/index.ts",
     "seed": "npx ts-node prisma/seed.ts"
